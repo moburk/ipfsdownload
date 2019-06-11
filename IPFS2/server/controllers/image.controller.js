@@ -7,6 +7,7 @@ module.exports = router;
 
 router.post('/getFile', getFile);
 router.get('/dispImg',dispImg);
+//router.post('/download',download)
 
 function getFile(req,res){
     imageService.getimg(req.body).then(function(hash){
@@ -26,3 +27,12 @@ function dispImg(req,res){
             res.status(400).send(err);
         })
 }
+
+/*function download(req,res){
+    imageService.download(req.body,res).then(()=>{
+        console.log('Download successful.');
+    })
+    .catch(err =>{
+        res.status(400).send(err);
+    })
+}*/
