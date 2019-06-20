@@ -3,7 +3,6 @@ var router = express.Router();
 var imageService = require('../services/image.service');
 var multer = require('multer');
 
-
 var storage = multer.diskStorage({
     // destination
     destination: function (req, file, cb) {
@@ -22,7 +21,6 @@ module.exports = router;
 router.post('/getFile', getFile);
 router.get('/dispImg',dispImg);
 router.post('/upload',upload.array("uploads[]",12),uploadFiles);
-//router.post('/upload',upload.single('file1'),uploadFiles);
 router.delete('/:_id', deleteFile);
 
 function getFile(req,res){
@@ -46,9 +44,9 @@ function dispImg(req,res){
 
 function uploadFiles(req,res){
     console.log(req.files)
-    imageService.uploadFiles(req.files, req.body, req.query)
-        .then(()=>{
-            res.send();        
+    imageService.uploadFiles(req.files)
+        .then((files)=>{
+            res.json(files);        
         })
         .catch(err =>{
             res.status(400).send(err);
@@ -64,4 +62,3 @@ function deleteFile(req, res){
             res.status(400).send(err);
         })
 }
-

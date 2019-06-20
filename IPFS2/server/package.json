@@ -9,14 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "crud-sdk": "0.0.30",
     "express": "^4.17.1",
-    "file-saver": "^2.0.2",
     "fs": "0.0.1-security",
     "ipfs-api": "^26.1.2",
+    "multer": "^1.4.1",
+    "path": "^0.12.7",
     "q": "^1.5.1"
   }
 }
