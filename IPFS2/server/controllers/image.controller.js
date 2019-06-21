@@ -19,19 +19,9 @@ var upload = multer({ storage: storage });
 
 module.exports = router;
 
-//router.post('/getFile', getFile);
 router.get('/returnFiles', returnFiles);
 router.post('/upload',upload.array("uploads[]",12),uploadFiles);
 router.delete('/:_id', deleteFile);
-
-/*function getFile(req,res){
-    imageService.storeFiles(req.body).then(function(){
-        res.send();
-    })
-    .catch(function (err) {
-        res.status(400).send(err);
-    })
-}*/
 
 function returnFiles(req,res){
     imageService.returnFiles()
@@ -44,7 +34,6 @@ function returnFiles(req,res){
 }
 
 function uploadFiles(req,res){
-    //console.log(req.files)
     imageService.uploadFiles(req.files, req.body, req.query)
         .then(()=>{
             res.send();        
