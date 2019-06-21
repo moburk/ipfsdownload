@@ -3,10 +3,6 @@ var app = express();
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var path = require('path');
-//var multer = require('multer');
-
-
-//app.use(fileUpload());
 
 app.use(cors());
 
@@ -22,10 +18,6 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
-/*app.post("/api/upload", multer({dest: "./uploads/"}).array("uploads", 12), function(req, res) {
-    res.send(req.files);
-});*/
 
 app.use('/api',require('./controllers/image.controller'));
 
