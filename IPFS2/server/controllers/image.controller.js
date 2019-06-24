@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var imageService = require('../services/image.service');
 var multer = require('multer');
+// var app = express();
+// var bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 
 var storage = multer.diskStorage({
@@ -36,6 +40,7 @@ function returnFiles(req,res){
 function uploadFiles(req,res){
     imageService.uploadFiles(req.files, req.body, req.query)
         .then(()=>{
+            console.log('Files successfully uploaded!');
             res.send();        
         })
         .catch(err =>{
@@ -44,9 +49,9 @@ function uploadFiles(req,res){
 }
 
 function deleteFile(req, res){
-    imageService.deleteFile(req.params._id)
+    imageService.deleteFile(req.params._id, req.query)
         .then(function(){
-            res.json('success')
+            res.json('File successfully deleted!')
         })
         .catch(function(err){
             res.status(400).send(err);
