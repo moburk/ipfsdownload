@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/api',require('./controllers/image.controller'));
+app.use('/api',require('./api/controllers/ipfs.controller'));
 
 app.listen(port, ()=>{
     console.log('Listening to port 3000.');

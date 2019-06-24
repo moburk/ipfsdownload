@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var imageService = require('../services/image.service');
+var imageService = require('../services/ipfs.service');
 var multer = require('multer');
 // var app = express();
 // var bodyParser = require('body-parser');
@@ -51,7 +51,7 @@ function uploadFiles(req,res){
 function deleteFile(req, res){
     imageService.deleteFile(req.params._id, req.query)
         .then(function(){
-            res.json('File successfully deleted!')
+            res.send('File successfully deleted!')
         })
         .catch(function(err){
             res.status(400).send(err);
