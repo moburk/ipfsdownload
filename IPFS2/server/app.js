@@ -1,8 +1,11 @@
-var express = require('express');
-var app = express();
-var cors = require('cors');
-var bodyParser = require('body-parser');
-var path = require('path');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+//const swaggerDocument = require('./api/swagger/ipfs_swagger.json');
+//app.use('/api-docs/v1.0', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
 

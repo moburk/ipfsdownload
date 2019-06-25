@@ -1,12 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var imageService = require('../services/ipfs.service');
-var multer = require('multer');
-// var app = express();
-// var bodyParser = require('body-parser');
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
-
+const express = require('express');
+const router = express.Router();
+const imageService = require('../services/ipfs.service');
+const multer = require('multer');
 
 var storage = multer.diskStorage({
     // destination to temporarily store files on the server
@@ -28,9 +23,9 @@ router.post('/upload',upload.array("uploads[]",12),uploadFiles);
 router.delete('/:_id', deleteFile);
 
 function returnFiles(req,res){
-    imageService.returnFiles()
-        .then(function(hashes){
-            res.json(hashes);
+    imageService.returnFiles(req.query)
+        .then(function(files){
+            res.status(200).json(files);
         })
         .catch(err =>{
             res.status(400).send(err);
@@ -40,8 +35,8 @@ function returnFiles(req,res){
 function uploadFiles(req,res){
     imageService.uploadFiles(req.files, req.body, req.query)
         .then(()=>{
-            console.log('Files successfully uploaded!');
-            res.send();        
+            //console.log('Files successfully uploaded!');
+            res.status(200).send('Files successfully uploaded!');        
         })
         .catch(err =>{
             res.status(400).send(err);
@@ -51,7 +46,7 @@ function uploadFiles(req,res){
 function deleteFile(req, res){
     imageService.deleteFile(req.params._id, req.query)
         .then(function(){
-            res.send('File successfully deleted!')
+            res.status(200).send('File successfully deleted!')
         })
         .catch(function(err){
             res.status(400).send(err);

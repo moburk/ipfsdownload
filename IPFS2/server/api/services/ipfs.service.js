@@ -1,5 +1,5 @@
-var Q = require('q');
-var crud = require('crud-sdk');
+const Q = require('q');
+const crud = require('crud-sdk');
 const fs = require('fs');
 const ipfsAPI = require('ipfs-api');
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
@@ -8,9 +8,9 @@ const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
 // const dbName ='filehashes'
 // const collectionName = 'hashes'
 
-var mongoURL = "";
-var dbName = "";
-var collectionName = "";
+let mongoURL = "";
+let dbName = "";
+let collectionName = "";
 
 //to delete files after use
 const { promisify } = require('util')
@@ -103,9 +103,12 @@ function storeFiles(oneFile) {
     return deferred.promise;
 }
 
-function returnFiles(){
+function returnFiles(dbinfo){
     //Returns an array of JSON of all the file data from the database
     var deferred = Q.defer();
+    mongoURL = dbinfo.cs;
+    dbName = dbinfo.db;
+    collectionName = dbinfo.coll;
     crud.readByCondition(mongoURL, dbName, collectionName,{},{},function(err,result){
         if(err)
             deferred.reject(err);
