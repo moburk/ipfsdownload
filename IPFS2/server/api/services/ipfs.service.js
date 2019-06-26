@@ -35,7 +35,7 @@ function uploadFiles(files, formdata, dbinfo){
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
     hashIt(files, formdata)
-        .then(message =>{
+        .then(() =>{
             deferred.resolve();    
         })
         .catch(err=>{
@@ -69,8 +69,11 @@ async function hashIt(files, formdata){
             unlinkAsync(files[i].destination + files[i].filename); 
             next();
             })
-            .catch(()=>console.log('Error in hashing file!'))
-        }  
+            .catch((err)=>{
+                console.log('Error in hashing file!')
+                reject(err);
+            })
+        }
     })
 }
 
@@ -81,7 +84,7 @@ async function addFilesToIPFS(testBuffer){
     await ipfs.files.add(testBuffer, function (err, hashedfile) {
         if (err) {
             console.log(err);
-            deferred.reject();
+            deferred.reject(err);
         }
         //returns only the hash of the file
         deferred.resolve(hashedfile[0]); 
@@ -117,14 +120,14 @@ function returnFiles(dbinfo){
     return deferred.promise;
 }
 
-function deleteFile(_id, dbinfo){
+async function deleteFile(_id, dbinfo){
     //deletes the file using the Object ID
     //initializing database information
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
     var deferred = Q.defer();
-    crud.deleteById(mongoURL, dbName, collectionName, _id, function (err, result) {
+    await crud.deleteById(mongoURL, dbName, collectionName, _id, function (err, result) {
         if (err) deferred.reject(err)
         deferred.resolve();
     });
