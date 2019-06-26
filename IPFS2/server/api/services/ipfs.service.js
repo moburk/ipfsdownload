@@ -71,7 +71,7 @@ async function hashIt(files, formdata){
             })
             .catch((err)=>{
                 console.log('Error in hashing file!')
-                reject(err);
+                Promise.reject(err);
             })
         }
     })
