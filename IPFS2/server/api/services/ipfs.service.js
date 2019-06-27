@@ -32,6 +32,10 @@ function uploadFiles(files, formdata, dbinfo){
     //req.query which contains the connection string, database name and collection name where the files are to be stored
     //Calls a synchronous function hashIt() which uses the ipfs-api to hash the uploaded files
     var deferred = Q.defer();
+    if(dbinfo == undefined)
+    {
+        deferred.reject('Database information in query string missing');
+    }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
@@ -48,9 +52,12 @@ function uploadFiles(files, formdata, dbinfo){
 async function hashIt(files, formdata){
     //Calls addFilesToIPFS that generates a unique hash for the file,
     // then calls storeFiles which uploads each hashed file to the database
+    var deferred = Q.defer();
     var data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
-    
-    
+    if(data.length !== files.length)
+    {
+        deferred.reject('formData and file information length mismatch');
+    }    
     await new Promise(next => {
     for(let i=0; i<files.length;i++){ //loops through the array of files
         let testFile = fs.readFileSync(files[i].destination + files[i].filename);
@@ -71,11 +78,13 @@ async function hashIt(files, formdata){
             next();
             })
             .catch((err)=>{
-                console.log('Error in hashing file!')
-                Promise.reject(err);
+                //console.log('Error in hashing file!')
+                deferred.reject('Error in hashing file');
             })
         }
+        deferred.resolve();
     })
+    return deferred.promise;
 }
 
 async function updateFile(file, formdata, dbinfo, _id){ 
@@ -83,9 +92,6 @@ async function updateFile(file, formdata, dbinfo, _id){
     //req.body which contains form data that is to be binded to the file data in an array of JSON in string format
     //req.query which contains the connection string, database name and collection name where the files are to be stored
     var deferred = Q.defer();
-    // mongoURL = dbinfo.cs;
-    // dbName = dbinfo.db;
-    // collectionName = dbinfo.coll;
     var data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
     let testFile = fs.readFileSync(file.destination + file.filename);
     //Creating buffer for ipfs function to add file to the system
@@ -130,13 +136,13 @@ async function addFilesToIPFS(testBuffer){
 function storeFiles(oneFile) {
     //Stores the JSON of file data in the database
     var deferred = Q.defer();
+    if(oneFile == undefined)
+        deferred.reject('File is undefined');
     crud.create(mongoURL, dbName, collectionName, oneFile, function(err,data){
         if(err) {
             console.log(err);
             deferred.reject('Failed to upload file to the database');}
     })
-    if(oneFile == undefined)
-        deferred.reject('File is undefined');
     deferred.resolve();
     return deferred.promise;
 }
@@ -144,6 +150,10 @@ function storeFiles(oneFile) {
 function returnFiles(dbinfo){
     //Returns an array of JSON of all the file data from the database
     var deferred = Q.defer();
+    if(dbinfo == undefined)
+    {
+        deferred.reject('Database information in query string missing')
+    }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
@@ -172,6 +182,10 @@ async function deleteFile(_id, dbinfo){
 async function updateFileInDB(file, _id, dbinfo){
     //updates the file using the Object ID
     //initializing database information
+    if(dbinfo == undefined)
+    {
+        deferred.reject('Database information in query string missing')
+    }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;

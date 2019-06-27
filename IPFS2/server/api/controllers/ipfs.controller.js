@@ -29,6 +29,7 @@ function returnFiles(req,res){
             res.status(200).json(files);
         })
         .catch(err =>{
+            console.log('Failed to retrieve files')
             res.status(400).send(err);
         })
 }
@@ -36,7 +37,6 @@ function returnFiles(req,res){
 function uploadFiles(req,res){
     imageService.uploadFiles(req.files, req.body, req.query)
         .then(()=>{
-            //console.log('Files successfully uploaded!');
             res.status(200).send('Files successfully uploaded!');        
         })
         .catch(err =>{
