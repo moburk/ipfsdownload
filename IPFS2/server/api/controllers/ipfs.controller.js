@@ -20,7 +20,8 @@ module.exports = router;
 
 router.get('/returnFiles', returnFiles);
 router.post('/upload',upload.array("uploads[]",12),uploadFiles);
-router.delete('/:_id', deleteFile);
+router.delete('/delete/:_id', deleteFile);
+router.put('/updateFile/:_id',upload.single("file"), updateFile);
 
 function returnFiles(req,res){
     imageService.returnFiles(req.query)
@@ -53,3 +54,12 @@ function deleteFile(req, res){
         })
 }
 
+function updateFile(req, res){
+    imageService.updateFile(req.file, req.body, req.query, req.params._id)
+        .then(function(){
+            res.status(200).send('File successfully updated!')
+        })
+        .catch(function(err){
+            res.status(400).send(err);
+        })
+}

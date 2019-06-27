@@ -1,1 +1,0 @@
-Simple text file for testing the IPFS app.

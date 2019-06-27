@@ -24,6 +24,7 @@ module.exports = service;
 service.returnFiles = returnFiles;
 service.uploadFiles = uploadFiles;
 service.deleteFile = deleteFile;
+service.updateFile = updateFile;
 
 function uploadFiles(files, formdata, dbinfo){ 
     //Accepts three arguments: req.files which contains an array of file data, 
@@ -77,6 +78,40 @@ async function hashIt(files, formdata){
     })
 }
 
+async function updateFile(file, formdata, dbinfo, _id){ 
+    //Accepts three arguments: req.file which contains file to be updated, 
+    //req.body which contains form data that is to be binded to the file data in an array of JSON in string format
+    //req.query which contains the connection string, database name and collection name where the files are to be stored
+    var deferred = Q.defer();
+    // mongoURL = dbinfo.cs;
+    // dbName = dbinfo.db;
+    // collectionName = dbinfo.coll;
+    var data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
+    let testFile = fs.readFileSync(file.destination + file.filename);
+    //Creating buffer for ipfs function to add file to the system
+    let testBuffer = new Buffer.from(testFile); 
+    await addFilesToIPFS(testBuffer)
+        .then((hashedfile)=>{
+        //Binding the returned hash of the respective file to the rest of the file data
+        file.hash = hashedfile.hash;
+        //urlForAccess can be used to display the file in a normal browser without running the ipfs daemon
+        file.urlForAccess = "https://ipfs.io/ipfs/" + file.hash;
+        //Binding the rest of the form data to the respective file
+        Object.assign(file,data); 
+        //stores file in the database
+        updateFileInDB(file, _id, dbinfo);
+        //to delete the file from server after storing in the database
+        unlinkAsync(file.destination + file.filename); 
+        deferred.resolve();
+        })
+        .catch((err)=>{
+            console.log('Error in hashing file!')
+            Promise.reject(err);
+        })
+    
+    return deferred.promise;
+}
+
 
 async function addFilesToIPFS(testBuffer){
     //uses the ipfs-api to generate a unique content-based hash for the file
@@ -128,6 +163,22 @@ async function deleteFile(_id, dbinfo){
     collectionName = dbinfo.coll;
     var deferred = Q.defer();
     await crud.deleteById(mongoURL, dbName, collectionName, _id, function (err, result) {
+        if (err) deferred.reject(err)
+        deferred.resolve();
+    });
+    return deferred.promise;
+}
+
+async function updateFileInDB(file, _id, dbinfo){
+    //updates the file using the Object ID
+    //initializing database information
+    mongoURL = dbinfo.cs;
+    dbName = dbinfo.db;
+    collectionName = dbinfo.coll;
+    var deferred = Q.defer();
+    if(file == undefined)
+        deferred.reject('File is undefined')
+    await crud.updateById(mongoURL, dbName, collectionName, file, _id, function (err, result) {
         if (err) deferred.reject(err)
         deferred.resolve();
     });
