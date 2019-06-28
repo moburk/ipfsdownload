@@ -26,10 +26,12 @@ router.put('/updateFile/:_id',upload.single("file"), updateFile);
 function returnFiles(req,res){
     imageService.returnFiles(req.query)
         .then(function(files){
+            if(files.length === 0)
+                res.status(200).send('Database is empty!')            
             res.status(200).json(files);
         })
         .catch(err =>{
-            console.log('Failed to retrieve files')
+            //console.log('Failed to retrieve files')
             res.status(400).send(err);
         })
 }

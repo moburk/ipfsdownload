@@ -27,3 +27,9 @@ app.use('/api',require('./api/controllers/ipfs.controller'));
 app.listen(port, ()=>{
     console.log('Listening to port 3000.');
 })
+
+
+//to handle any other requests
+app.use(function(req, res) {
+  res.status(404).end('Not Found');
+});
