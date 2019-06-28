@@ -32,14 +32,20 @@ function uploadFiles(files, formdata, dbinfo){
     //req.query which contains the connection string, database name and collection name where the files are to be stored
     //Calls a synchronous function hashIt() which uses the ipfs-api to hash the uploaded files
     var deferred = Q.defer();
-    if(dbinfo == undefined)
+    // if(Object.keys(dbinfo).length === 0)
+    if((('cs' in dbinfo)==false)||(('db' in dbinfo)==false)||(('coll' in dbinfo)==false))
     {
-        deferred.reject('Database information in query string missing');
+        deferred.reject('Database information in query string missing!');
+    }
+    var data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
+    if(data.length !== files.length)
+    {
+        deferred.reject('formData and file information length mismatch');
     }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
-    hashIt(files, formdata)
+    hashIt(files, data)
         .then(() =>{
             deferred.resolve();    
         })
@@ -49,15 +55,11 @@ function uploadFiles(files, formdata, dbinfo){
     return deferred.promise;
 }
 
-async function hashIt(files, formdata){
+async function hashIt(files, data){
     //Calls addFilesToIPFS that generates a unique hash for the file,
     // then calls storeFiles which uploads each hashed file to the database
     var deferred = Q.defer();
-    var data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
-    if(data.length !== files.length)
-    {
-        deferred.reject('formData and file information length mismatch');
-    }    
+        
     await new Promise(next => {
     for(let i=0; i<files.length;i++){ //loops through the array of files
         let testFile = fs.readFileSync(files[i].destination + files[i].filename);
@@ -150,9 +152,9 @@ function storeFiles(oneFile) {
 function returnFiles(dbinfo){
     //Returns an array of JSON of all the file data from the database
     var deferred = Q.defer();
-    if(dbinfo == undefined)
+    if((('cs' in dbinfo)==false)||(('db' in dbinfo)==false)||(('coll' in dbinfo)==false))
     {
-        deferred.reject('Database information in query string missing')
+        deferred.reject('Database information in query string missing!');
     }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
@@ -168,6 +170,10 @@ function returnFiles(dbinfo){
 async function deleteFile(_id, dbinfo){
     //deletes the file using the Object ID
     //initializing database information
+    if((('cs' in dbinfo)==false)||(('db' in dbinfo)==false)||(('coll' in dbinfo)==false))
+    {
+        deferred.reject('Database information in query string missing');
+    }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
     collectionName = dbinfo.coll;
@@ -182,9 +188,9 @@ async function deleteFile(_id, dbinfo){
 async function updateFileInDB(file, _id, dbinfo){
     //updates the file using the Object ID
     //initializing database information
-    if(dbinfo == undefined)
+    if((('cs' in dbinfo)==false)||(('db' in dbinfo)==false)||(('coll' in dbinfo)==false))
     {
-        deferred.reject('Database information in query string missing')
+        deferred.reject('Database information in query string missing');
     }
     mongoURL = dbinfo.cs;
     dbName = dbinfo.db;
