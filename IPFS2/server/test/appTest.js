@@ -84,7 +84,7 @@ describe('Tests for app.js', function () {
         //     done();
         // })
 
-        // it('Does not crash when query string is missing', (done) =>{
+        // it('/returnFiles does not crash when query string is missing', (done) =>{
         //     chai.request(serverURL).get('/returnFiles')
         //     .catch((err)=>{
         //         expect(res).to.have.status(400);
@@ -111,9 +111,9 @@ describe('Tests for app.js', function () {
     })
 
     describe('Tests for /updateFile', function () {
-        let objID = '5d19930696485930b35480c6';
+        let objID = '5d1999048c628d359812728e';
         it('Updates single files along with form data to MongoDB', (done) => {
-            chai.request(serverURL).post('/updateFile/'+ objID + querystring)
+            chai.request(serverURL).put('/updateFile/'+ objID + querystring)
                 .type('form')
                 .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
                 .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
@@ -123,20 +123,18 @@ describe('Tests for app.js', function () {
             done();
         })
 
-        /*it('Upload files with mismatch in formData and number of files', (done) => {
-            chai.request(serverURL).post('/upload' + querystring)
+        it('/updateFiles for Mongo ID that does not exist', (done) => {
+            chai.request(serverURL).put('/updateFile/'+ objID + querystring)
                 .type('form')
-                .field('fileInformation', JSON.stringify([{ 'cool': 'cool1' }]))
-                .attach('uploads[]', __dirname + '/uploads/file1.txt', 'file1.txt')
-                .attach('uploads[]', __dirname + '/uploads/file2.txt', 'file2.txt')
-                .catch((err) => {
-                    expect(result).to.have.status(400);
-                    console.log('error for /upload: ' + err);
+                .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+                .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+                .then((result) => {
+                    expect(result).to.have.status(200);
                 })
             done();
-        })*/
+        })
 
-        // it('Does not crash when query string is missing', (done) => {
+        // it('/updateFile Does not crash when query string is missing', (done) => {
         //     chai.request(serverURL).post('/upload')
         //         .type('form')
         //         .field('fileInformation', JSON.stringify([{ 'cool': 'cool1' }, { 'cool': 'cool2' }]))

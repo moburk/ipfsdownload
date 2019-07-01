@@ -37,6 +37,8 @@ function uploadFiles(files, formdata, dbinfo) {
         deferred.reject('Database information in query string missing!');
         return deferred.promise;
     }
+    if(files.length == 0)
+        deferred.reject('No files to upload')
     var data = {};
     if (Object.keys(formdata).length !== 0) { //in case user doesn't want to upload any form data
         data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
@@ -76,7 +78,10 @@ async function hashIt(files, data) {
                     //Binding the rest of the form data to the respective file
                     Object.assign(files[i], data[i]);
                     //stores file in the database
-                    storeFiles(files[i]);
+                    storeFiles(files[i])
+                        .catch(err => {
+                            deferred.reject(err);
+                        })
                     //to delete the file from server after storing in the database
                     unlinkAsync(files[i].destination + files[i].filename);
                     next();
@@ -96,6 +101,10 @@ async function updateFile(file, formdata, dbinfo, _id) {
     //req.query which contains the connection string, database name and collection name where the files are to be stored
     //req.params._id which contains the Object ID of the Object to be updated
     var deferred = Q.defer();
+    if (file == undefined){
+        deferred.reject('File is undefined')
+        return deferred.promise;
+    }
     var data = {};
     if (Object.keys(formdata).length !== 0) { //in case user doesn't want to upload any form data
         data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
@@ -112,16 +121,27 @@ async function updateFile(file, formdata, dbinfo, _id) {
             //Binding the rest of the form data to the respective file
             Object.assign(file, data);
             //stores file in the database
-            updateFileInDB(file, _id, dbinfo);
+            if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
+                deferred.reject('Database information in query string missing');
+                return deferred.promise;
+            }
+            mongoURL = dbinfo.cs;
+            dbName = dbinfo.db;
+            collectionName = dbinfo.coll;
+            crud.updateById(mongoURL, dbName, collectionName, file, _id, function (err, result) {
+                if (err){ 
+                    deferred.reject(err)
+                    return deferred.promise; 
+                }
+            })
             //to delete the file from server after storing in the database
             unlinkAsync(file.destination + file.filename);
             deferred.resolve();
         })
         .catch((err) => {
             console.log('Error in hashing file!')
-            Promise.reject(err);
+            deferred.reject(err);
         })
-
     return deferred.promise;
 }
 
@@ -149,7 +169,7 @@ function storeFiles(oneFile) {
         if (err) {
             console.log(err);
             deferred.reject('Failed to upload file to the database');
-            return deferred.promise;
+            //return deferred.promise;
         }
     })
     deferred.resolve();
@@ -188,26 +208,6 @@ async function deleteFile(_id, dbinfo) {
     collectionName = dbinfo.coll;
     var deferred = Q.defer();
     await crud.deleteById(mongoURL, dbName, collectionName, _id, function (err, result) {
-        if (err) deferred.reject(err)
-        deferred.resolve();
-    });
-    return deferred.promise;
-}
-
-async function updateFileInDB(file, _id, dbinfo) {
-    //updates the file using the Object ID
-    //initializing database information
-    if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
-        deferred.reject('Database information in query string missing');
-        return deferred.promise;
-    }
-    mongoURL = dbinfo.cs;
-    dbName = dbinfo.db;
-    collectionName = dbinfo.coll;
-    var deferred = Q.defer();
-    if (file == undefined)
-        deferred.reject('File is undefined')
-    await crud.updateById(mongoURL, dbName, collectionName, file, _id, function (err, result) {
         if (err) deferred.reject(err)
         deferred.resolve();
     });
