@@ -91,13 +91,15 @@ async function hashIt(files, data) {
 }
 
 async function updateFile(file, formdata, dbinfo, _id) {
-    //Accepts three arguments: req.file which contains file to be updated, 
+    //Accepts four arguments: req.file which contains file to be updated, 
     //req.body which contains form data that is to be binded to the file data in an array of JSON in string format
     //req.query which contains the connection string, database name and collection name where the files are to be stored
+    //req.params._id which contains the Object ID of the Object to be updated
     var deferred = Q.defer();
     var data = {};
     if (Object.keys(formdata).length !== 0) { //in case user doesn't want to upload any form data
-        data = JSON.parse(formdata.fileInformation);} //converts the array of JSON passed from client in string back to JSON format
+        data = JSON.parse(formdata.fileInformation); //converts the array of JSON passed from client in string back to JSON format
+    }
     let testFile = fs.readFileSync(file.destination + file.filename);
     //Creating buffer for ipfs function to add file to the system
     let testBuffer = new Buffer.from(testFile);

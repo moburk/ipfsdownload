@@ -84,13 +84,13 @@ describe('Tests for app.js', function () {
         //     done();
         // })
 
-        it('Does not crash when query string is missing', (done) =>{
-            chai.request(serverURL).get('/returnFiles')
-            .catch((err)=>{
-                expect(res).to.have.status(400);
-            })
-            done();
-        })
+        // it('Does not crash when query string is missing', (done) =>{
+        //     chai.request(serverURL).get('/returnFiles')
+        //     .catch((err)=>{
+        //         expect(res).to.have.status(400);
+        //     })
+        //     done();
+        // })
 
         // it('Returns empty array when DB is empty', (done)=>{
         //     chai.request(serverURL).get('/returnFiles' + querystring)
@@ -101,12 +101,54 @@ describe('Tests for app.js', function () {
         //     done();
         // })
 
-        it('Returns files without query string', (done) =>{
-            chai.request(serverURL).get('/returnFiles')
-            .catch((err)=>{
-                expect(res).to.have.status(400);
-            })
+        // it('Gives 404 with wrong URL', (done) =>{
+        //     chai.request('http://localhost:3000').get('/returnFiles')
+        //     .catch((err)=>{
+        //         expect(res).to.have.status(404);
+        //     })
+        //     done();
+        // })
+    })
+
+    describe('Tests for /updateFile', function () {
+        let objID = '5d19930696485930b35480c6';
+        it('Updates single files along with form data to MongoDB', (done) => {
+            chai.request(serverURL).post('/updateFile/'+ objID + querystring)
+                .type('form')
+                .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+                .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+                .then((result) => {
+                    expect(result).to.have.status(200);
+                })
             done();
         })
+
+        /*it('Upload files with mismatch in formData and number of files', (done) => {
+            chai.request(serverURL).post('/upload' + querystring)
+                .type('form')
+                .field('fileInformation', JSON.stringify([{ 'cool': 'cool1' }]))
+                .attach('uploads[]', __dirname + '/uploads/file1.txt', 'file1.txt')
+                .attach('uploads[]', __dirname + '/uploads/file2.txt', 'file2.txt')
+                .catch((err) => {
+                    expect(result).to.have.status(400);
+                    console.log('error for /upload: ' + err);
+                })
+            done();
+        })*/
+
+        // it('Does not crash when query string is missing', (done) => {
+        //     chai.request(serverURL).post('/upload')
+        //         .type('form')
+        //         .field('fileInformation', JSON.stringify([{ 'cool': 'cool1' }, { 'cool': 'cool2' }]))
+        //         .attach('uploads[]', __dirname + '/uploads/file1.txt', 'file1.txt')
+        //         .attach('uploads[]', __dirname + '/uploads/file2.txt', 'file2.txt')
+        //         .catch((err) => {
+        //             expect(result).to.have.status(400);
+        //             console.log('error for /upload: ' + err);
+        //         })
+        //     done();
+        // })
+
     })
+
 });

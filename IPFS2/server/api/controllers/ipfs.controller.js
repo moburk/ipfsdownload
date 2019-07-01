@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const imageService = require('../services/ipfs.service');
+const ipfsService = require('../services/ipfs.service');
 const multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -24,7 +24,7 @@ router.delete('/delete/:_id', deleteFile);
 router.put('/updateFile/:_id',upload.single("file"), updateFile);
 
 function returnFiles(req,res){
-    imageService.returnFiles(req.query)
+    ipfsService.returnFiles(req.query)
         .then(function(files){
             if(files.length === 0)
                 res.status(200).send('Database is empty!')            
@@ -37,7 +37,7 @@ function returnFiles(req,res){
 }
 
 function uploadFiles(req,res){
-    imageService.uploadFiles(req.files, req.body, req.query)
+    ipfsService.uploadFiles(req.files, req.body, req.query)
         .then(()=>{
             res.status(200).send('Files successfully uploaded!');        
         })
@@ -47,7 +47,7 @@ function uploadFiles(req,res){
 }
 
 function deleteFile(req, res){
-    imageService.deleteFile(req.params._id, req.query)
+    ipfsService.deleteFile(req.params._id, req.query)
         .then(function(){
             res.status(200).send('File successfully deleted!')
         })
@@ -57,9 +57,9 @@ function deleteFile(req, res){
 }
 
 function updateFile(req, res){
-    imageService.updateFile(req.file, req.body, req.query, req.params._id)
+    ipfsService.updateFile(req.file, req.body, req.query, req.params._id)
         .then(function(){
-            res.status(200).send('File successfully updated!')
+            res.status(200).send('File successfully updated!');
         })
         .catch(function(err){
             res.status(400).send(err);
