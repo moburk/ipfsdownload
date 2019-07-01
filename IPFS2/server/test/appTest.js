@@ -111,41 +111,79 @@ describe('Tests for app.js', function () {
     })
 
     describe('Tests for /updateFile', function () {
+        //add a valid object ID first
         let objID = '5d1999048c628d359812728e';
-        it('Updates single files along with form data to MongoDB', (done) => {
-            chai.request(serverURL).put('/updateFile/'+ objID + querystring)
-                .type('form')
-                .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
-                .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
-                .then((result) => {
-                    expect(result).to.have.status(200);
-                })
-            done();
-        })
-
-        it('/updateFiles for Mongo ID that does not exist', (done) => {
-            chai.request(serverURL).put('/updateFile/'+ objID + querystring)
-                .type('form')
-                .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
-                .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
-                .then((result) => {
-                    expect(result).to.have.status(200);
-                })
-            done();
-        })
-
-        // it('/updateFile Does not crash when query string is missing', (done) => {
-        //     chai.request(serverURL).post('/upload')
+        // it('Updates single files along with form data to MongoDB', (done) => {
+        //     chai.request(serverURL).put('/updateFile/'+ objID + querystring)
         //         .type('form')
-        //         .field('fileInformation', JSON.stringify([{ 'cool': 'cool1' }, { 'cool': 'cool2' }]))
-        //         .attach('uploads[]', __dirname + '/uploads/file1.txt', 'file1.txt')
-        //         .attach('uploads[]', __dirname + '/uploads/file2.txt', 'file2.txt')
-        //         .catch((err) => {
-        //             expect(result).to.have.status(400);
-        //             console.log('error for /upload: ' + err);
+        //         .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+        //         .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+        //         .then((result) => {
+        //             expect(result).to.have.status(200);
         //         })
         //     done();
         // })
+        // let fakeObjID = 'sddghje'
+        // it('/updateFiles for Mongo ID that does not exist', (done) => {
+        //     chai.request(serverURL).put('/updateFile/'+ fakeObjID + querystring)
+        //         .type('form')
+        //         .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+        //         .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+        //         .catch((err) => {
+        //             expect(err).to.have.status(400);
+        //         })
+        //     done();
+        // })
+
+        // it('/updateFile Does not crash when query string is missing', (done) => {
+        //     chai.request(serverURL).put('/updateFile/'+ objID)
+        //     .type('form')
+        //     .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+        //     .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+        //     .catch((err) => {
+        //         expect(err).to.have.status(400);
+        //     })
+        //     done();
+        // })
+
+        it('/updateFile gives 404 when Object ID is missing', (done) => {
+            chai.request(serverURL).put('/updateFile/')
+            .type('form')
+            .field('fileInformation', JSON.stringify({ 'cool': 'fool1' }))
+            .attach('file', __dirname + '/uploads/file3.txt', 'file3.txt')
+            .catch((err) => {
+                expect(err).to.have.status(404);
+            })
+            done();
+        })
+    })
+
+    describe('Tests for /delete', function () {
+        //add a valid object ID first
+        let objID = '5d19afd00a9135435a43b608';
+        // it('Deletes single files along with form data to MongoDB', (done) => {
+        //     chai.request(serverURL).delete('/delete/'+ objID + querystring)
+        //         .then((result) => {
+        //             expect(result).to.have.status(200);
+        //         })
+        //     done();
+        // })
+        // let fakeObjID = 'sddghje'
+        // it('/deleteFiles for Mongo ID that does not exist', (done) => {
+        //     chai.request(serverURL).delete('/delete/'+ fakeObjID + querystring)
+        //         .catch((err) => {
+        //             expect(err).to.have.status(400);
+        //         })
+        //     done();
+        // })
+
+        it('/deleteFile does not crash when query string is missing', (done) => {
+            chai.request(serverURL).delete('/delete/'+ objID)
+            .catch((err) => {
+                expect(err).to.have.status(400);
+            })
+            done();
+        })
 
     })
 

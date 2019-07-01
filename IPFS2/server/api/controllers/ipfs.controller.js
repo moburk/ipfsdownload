@@ -52,7 +52,7 @@ function deleteFile(req, res){
             res.status(200).send('File successfully deleted!')
         })
         .catch(function(err){
-            res.status(400).send(err);
+            res.status(400).send('File could not be deleted!');
         })
 }
 
