@@ -32,7 +32,7 @@ function uploadFiles(files, formdata, dbinfo) {
     //req.query which contains the connection string, database name and collection name where the files are to be stored
     //Calls a synchronous function hashIt() which uses the ipfs-api to hash the uploaded files
     var deferred = Q.defer();
-    // if(Object.keys(dbinfo).length === 0)
+    //to check if query string has all info
     if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
         deferred.reject('Database information in query string missing!');
         return deferred.promise;
@@ -120,7 +120,7 @@ async function updateFile(file, formdata, dbinfo, _id) {
             file.urlForAccess = "https://ipfs.io/ipfs/" + file.hash;
             //Binding the rest of the form data to the respective file
             Object.assign(file, data);
-            //stores file in the database
+            //to check if query string has all info
             if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
                 deferred.reject('Database information in query string missing');
                 return deferred.promise;
@@ -128,6 +128,7 @@ async function updateFile(file, formdata, dbinfo, _id) {
             mongoURL = dbinfo.cs;
             dbName = dbinfo.db;
             collectionName = dbinfo.coll;
+            //stores file in the database
             crud.updateById(mongoURL, dbName, collectionName, file, _id, function (err, result) {
                 if (err){ 
                     deferred.reject(err)
@@ -179,6 +180,7 @@ function storeFiles(oneFile) {
 function returnFiles(dbinfo) {
     //Returns an array of JSON of all the file data from the database
     var deferred = Q.defer();
+    //to check if query string has all info
     if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
         deferred.reject('Database information in query string missing!');
         return deferred.promise;
@@ -199,6 +201,8 @@ function returnFiles(dbinfo) {
 async function deleteFile(_id, dbinfo) {
     //deletes the file using the Object ID
     //initializing database information
+
+    //to check if query string has all info
     if ((('cs' in dbinfo) == false) || (('db' in dbinfo) == false) || (('coll' in dbinfo) == false)) {
         deferred.reject('Database information in query string missing');
         return deferred.promise;

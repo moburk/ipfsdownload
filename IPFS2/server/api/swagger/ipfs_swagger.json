@@ -1,302 +1,378 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "description": "This is a IPFS Transfer API documentation.  You can find out more about ipfs at [https://ipfs.io/](https://ipfs.io/).  For this sample, you can use requests on https server to test the api",
-      "version": "1.0.0",
-      "title": "IPFS Transfer API",
-      "termsOfService": "https://discuss.ipfs.io/tos",
-      "contact": {
-        "email": "adityavaish5@gmail.com"
-      },
-      "license": {
-        "name": "IPFS 2.0",
-        "url": "https://github.com/ipfs/ipfs/blob/master/LICENSE"
-      }
-    },
-    "host": "localhost:3000",
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "api",
-        "description": "Everything about api",
-        "externalDocs": {
-          "description": "Find out more",
-          "url": "http://ipfs.io"
-        }
-      }
-    ],
-    "schemes": [
-      "https",
-      "http"
-    ],
-    "paths": {
-      "/api/returnFiles": {
-        "get": {
-          "tags": [
-            "api"
-          ],
-          "summary": "find by using object id",
-          "description": "",
-          "operationId": "addPet",
-          "consumes": [
-            "application/json",
-            "application/xml"
-          ],
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "cs",
-              "description": "This query contains connection string for database.",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "query",
-              "name": "db",
-              "description": "This query contains name of the database.",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "query",
-              "name": "coll",
-              "description": "This query contains collection name in database.",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "successful operation",
-              "schema": {
-                "$ref": "#/definitions/Return"
-              }
-            },
-            "400": {
-                "description": "Bad Request"
-              },
-               "401": {
-                "description": "Unauthorized access"
-              },
-              "404": {
-                "description": "Data not found"
-              },
-              "500": {
-                "description": "Internal server error"
-              },
-              "503": {
-                "description": "Service Unavailable"
-              }
-          }
-        }
-      },
-      "/api/upload": {
-        "post": {
-          "tags": [
-            "api"
-          ],
-          "summary": "Upload multiple files to ipfs.",
-          "description": "You need to provide database details as query, and files details in form-data",
-          "operationId": "upload",
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "cs",
-              "description": "This query contains connection string for database.",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "query",
-              "name": "db",
-              "description": "This query contains name of the database.",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "query",
-              "name": "coll",
-              "description": "This query contains collection name in database.",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "fileInformation",
-              "in": "formData",
-              "description": "Additional data to pass to server, this data should be stringify form of an array of json object for each file in sequential order, with each object holding the details of the respective file to be stored on the database.",
-              "required": true,
-              "type": "string",
-              "collectionFormat": "multi"
-            },
-            {
-              "name": "uploads[]",
-              "in": "formData",
-              "allowMultiple": true,
-              "description": "files to upload",
-              "required": true,
-              "type": "file",
-              "collectionFormat": "multi"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "successful operation"
-            },
-            "400": {
-                "description": "Bad Request"
-              },
-               "401": {
-                "description": "Unauthorized access"
-              },
-              "404": {
-                "description": "Data not found"
-              },
-              "500": {
-                "description": "Internal server error"
-              },
-              "503": {
-                "description": "Service Unavailable"
-              }
-          }
-        }
-      },
-      "/api/delete/{Id}": {
-        "delete": {
-          "tags": [
-            "api"
-          ],
-          "summary": "Delete a file from database by ID",
-          "description": "deletes a respected object by id.",
-          "operationId": "delete files by Id",
-          "produces": [
-            "application/xml",
-            "application/json"
-          ],
-          "parameters": [
-        {
-            "in": "query",
-            "name": "cs",
-            "description": "This query contains connection string for database.",
-            "required": true,
-            "type": "string"
-            },
-            {
-            "in": "query",
-            "name": "db",
-            "description": "This query contains name of the database.",
-            "required": true,
-            "type": "string"
-            },
-            {
-            "in": "query",
-            "name": "coll",
-            "description": "This query contains collection name in database.",
-            "required": true,
-            "type": "string"
-            },
-            {
-              "name": "Id",
-              "in": "path",
-              "description": "ID of object file in database.",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "successful operation"
-            },
-            "400": {
-                "description": "Bad Request"
-              },
-               "401": {
-                "description": "Unauthorized access"
-              },
-              "404": {
-                "description": "Data not found"
-              },
-              "500": {
-                "description": "Internal server error"
-              },
-              "503": {
-                "description": "Service Unavailable"
-              }
-          },
-          "security": [
-            {
-              "api_key": []
-            }
-          ]
-        }
-      }
-    },
-    "definitions": {
-      "Return": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "example": "5d1079623406a1527c49724d"
-            },
-            "fieldname": {
-              "type": "string",
-              "example": "uploads[]"
-            },
-            "originalname": {
-              "type": "string",
-              "example": "xyz.jpg"
-            },
-            "encoding": {
-              "type": "string",
-              "example": "7bit"
-            },
-            "mimetype": {
-              "type": "string",
-              "example": "image/jpeg"
-            },
-            "destination": {
-              "type": "string",
-              "example": "./uploads/"
-            },
-            "filename": {
-              "type": "string",
-              "example": "xyz.jpg"
-            },
-            "path": {
-              "type": "string",
-              "example": "uploads\\xyz.jpg"
-            },
-            "size": {
-              "type": "integer",
-              "example": 89796
-            },
-            "hash": {
-              "type": "string",
-              "example": "QmVdmiCU4SKSPeCSA1YJ8w6CWPzjzCCzuRpsGizCKakTaX"
-            },
-            "urlForAccess": {
-              "type": "string",
-              "example": "https://ipfs.io/ipfs/QmVdmiCU4SKSPeCSA1YJ8w6CWPzjzCCzuRpsGizCKakTaX"
-            },
-            "userid": {
-              "type": "string",
-              "example": "id1234"
-            }
-          }
-        }
-      }
-    }
-  }
+	"swagger": "2.0",
+	"info": {
+		"description": "This is a IPFS Transfer API documentation.  You can find out more about ipfs at [https://ipfs.io/](https://ipfs.io/).  For this sample, you can use requests on https server to test the api",
+		"version": "1.0.0",
+		"title": "IPFS Transfer API",
+		"termsOfService": "https://discuss.ipfs.io/tos",
+		"contact": {
+			"email": "adityavaish5@gmail.com"
+		},
+		"license": {
+			"name": "IPFS 2.0",
+			"url": "https://github.com/ipfs/ipfs/blob/master/LICENSE"
+		}
+	},
+	"host": "localhost:3000",
+	"basePath": "/",
+	"tags": [
+		{
+			"name": "api",
+			"description": "Everything about api",
+			"externalDocs": {
+				"description": "Find out more",
+				"url": "http://ipfs.io"
+			}
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"paths": {
+		"/api/returnFiles": {
+			"get": {
+				"tags": [
+					"api"
+				],
+				"summary": "find by using object id",
+				"description": "",
+				"operationId": "addPet",
+				"consumes": [
+					"application/json",
+					"application/xml"
+				],
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cs",
+						"description": "This query contains connection string for database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "db",
+						"description": "This query contains name of the database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "coll",
+						"description": "This query contains collection name in database.",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "json file",
+						"schema": {
+							"$ref": "#/definitions/Return"
+						}
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Unauthorized access"
+					},
+					"404": {
+						"description": "Database information in query string missing!"
+					},
+					"500": {
+						"description": "Internal server error"
+					},
+					"503": {
+						"description": "Service Unavailable"
+					}
+				}
+			}
+		},
+		"/api/upload": {
+			"post": {
+				"tags": [
+					"api"
+				],
+				"summary": "Upload multiple files to ipfs.",
+				"description": "You need to provide database details as query, and files details in form-data",
+				"operationId": "upload",
+				"consumes": [
+					"multipart/form-data"
+				],
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cs",
+						"description": "This query contains connection string for database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "db",
+						"description": "This query contains name of the database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "coll",
+						"description": "This query contains collection name in database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "fileInformation",
+						"in": "formData",
+						"description": "Additional data to pass to server, this data should be stringify form of an array of json object for each file in sequential order, with each object holding the details of the respective file to be stored on the database.",
+						"required": false,
+						"type": "string",
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "uploads[]",
+						"in": "formData",
+						"description": "files to upload",
+						"required": true,
+						"type": "file",
+						"collectionFormat": "multi"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Files successfully uploaded!"
+					},
+					"400": {
+						"description": "Database information in query string missing! / database is empty"
+					},
+					"401": {
+						"description": "Unauthorized access"
+					},
+					"404": {
+						"description": "Data not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					},
+					"503": {
+						"description": "Service Unavailable"
+					}
+				}
+			}
+		},
+		"/api/delete/{Id}": {
+			"delete": {
+				"tags": [
+					"api"
+				],
+				"summary": "Delete a file from database by ID",
+				"description": "deletes a respected object by id.",
+				"operationId": "delete files by Id",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cs",
+						"description": "This query contains connection string for database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "db",
+						"description": "This query contains name of the database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "coll",
+						"description": "This query contains collection name in database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "Id",
+						"in": "path",
+						"description": "ID of object file in database.",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "File successfully deleted!"
+					},
+					"400": {
+						"description": "File could not be deleted!"
+					},
+					"401": {
+						"description": "Unauthorized access"
+					},
+					"404": {
+						"description": "Data not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					},
+					"503": {
+						"description": "Service Unavailable"
+					}
+				}
+			}
+		},
+		"/api/updateFile/{Id}": {
+			"put": {
+				"tags": [
+					"api"
+				],
+				"summary": "Updates a file from database by ID",
+				"description": "updates a respected object by id.",
+				"operationId": "update files by Id",
+				"consumes": [
+					"multipart/form-data"
+				],
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cs",
+						"description": "This query contains connection string for database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "db",
+						"description": "This query contains name of the database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "coll",
+						"description": "This query contains collection name in database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "Id",
+						"in": "path",
+						"description": "ID of object file in database.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "fileInformation",
+						"in": "formData",
+						"description": "Additional data to pass to server, this data should be stringify form of an array of json object for each file in sequential order, with each object holding the details of the respective file to be stored on the database.",
+						"required": false,
+						"type": "string",
+						"collectionFormat": "multi"
+					},
+					{
+						"name": "file",
+						"in": "formData",
+						"description": "files to upload",
+						"required": true,
+						"type": "file",
+						"collectionFormat": "multi"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "File successfully updated!"
+					},
+					"400": {
+						"description": "File could not be updated!"
+					},
+					"401": {
+						"description": "Unauthorized access"
+					},
+					"404": {
+						"description": "Data not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					},
+					"503": {
+						"description": "Service Unavailable"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Return": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"example": "5d1079623406a1527c49724d"
+					},
+					"fieldname": {
+						"type": "string",
+						"example": "uploads[]"
+					},
+					"originalname": {
+						"type": "string",
+						"example": "xyz.jpg"
+					},
+					"encoding": {
+						"type": "string",
+						"example": "7bit"
+					},
+					"mimetype": {
+						"type": "string",
+						"example": "image/jpeg"
+					},
+					"destination": {
+						"type": "string",
+						"example": "./uploads/"
+					},
+					"filename": {
+						"type": "string",
+						"example": "xyz.jpg"
+					},
+					"path": {
+						"type": "string",
+						"example": "uploads\\xyz.jpg"
+					},
+					"size": {
+						"type": "integer",
+						"example": 89796
+					},
+					"hash": {
+						"type": "string",
+						"example": "QmVdmiCU4SKSPeCSA1YJ8w6CWPzjzCCzuRpsGizCKakTaX"
+					},
+					"urlForAccess": {
+						"type": "string",
+						"example": "https://ipfs.io/ipfs/QmVdmiCU4SKSPeCSA1YJ8w6CWPzjzCCzuRpsGizCKakTaX"
+					},
+					"userid": {
+						"type": "string",
+						"example": "id1234"
+					}
+				}
+			}
+		}
+	}
+}
