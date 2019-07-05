@@ -1,8 +1,10 @@
 const Q = require('q');
 const crud = require('crud-sdk');
 const fs = require('fs');
-const ipfsAPI = require('ipfs-api');
-const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' });
+const ipfsClient = require('ipfs-http-client');
+const ipfs = ipfsClient('ipfs.infura.io', '5001', { protocol: 'https' });
+// in case you want to use a local client
+// const ipfs = ipfsClient('localhost', '5001', { protocol: 'http' });
 
 // const mongoURL = 'mongodb://127.0.0.1:27017/';
 // const dbName ='filehashes'
@@ -150,7 +152,7 @@ async function updateFile(file, formdata, dbinfo, _id) {
 async function addFilesToIPFS(testBuffer) {
     //uses the ipfs-api to generate a unique content-based hash for the file
     var deferred = Q.defer();
-    await ipfs.files.add(testBuffer, function (err, hashedfile) {
+    await ipfs.add(testBuffer, function (err, hashedfile) {
         if (err) {
             console.log(err);
             deferred.reject(err);
