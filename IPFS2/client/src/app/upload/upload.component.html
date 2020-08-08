@@ -1,0 +1,28 @@
+<!--
+<h2 text-align="center">Upload a File</h2>
+<form ref='uploadForm' [formGroup]="additionalInfo" (ngSubmit)="upload(additionalInfo.value)" novalidate>
+  <div class = "form-group">
+  <div>
+    <input type="file" (change)="fileChangeEvent($event)" name="ulfile" placeholder="Upload a file" multiple/>
+  </div>
+  <div>
+    <input type="text" name="addInfo1" placeholder="Enter filename" formControlName="_filename" />
+  </div>
+  <div>
+    <input type="submit" class="btn btn-success btn-s" value="Upload" />
+  </div>
+</div>
+</form>
+-->
+
+<h2 text-align="center">Upload a File</h2>
+<form ref='uploadForm'>
+  <div class = "form-group">
+  <div>
+    <input type="file" (change)="fileChangeEvent($event)" name="ulfile" placeholder="Upload a file" multiple/>
+  </div>
+  <div>
+    <button type="button" class="btn btn-success btn-s" (click)="upload()">Upload</button>
+  </div>
+</div>
+</form>

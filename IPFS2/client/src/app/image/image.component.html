@@ -1,0 +1,14 @@
+<table class="table">
+    <tr>
+        <th>File</th>
+        <th>File name</th>
+        <th>Download</th>
+        <th>Delete</th>
+    </tr>
+    <tr *ngFor="let file of ifiles">
+        <td><img src= {{file.urlForAccess}} width=500></td>
+        <td>{{file.filename}}</td>
+        <td><input type="button" class="btn btn-primary" value="Download" (click)= "download(file)"></td>
+        <td><input type="button" class="btn btn-danger" value="Delete" (click)="deleteFile(file)"></td>
+    </tr>
+</table>

@@ -1,0 +1,13 @@
+<form [formGroup] = "imgData" (ngSubmit)="sendImgData(imgData.value)" novalidate>
+  <div class = "form-group">
+  <div>
+    <input type = "text" name = "hash" placeholder="Enter file hash" formControlName="hash" />
+  </div>
+  <br>
+  <input type = "text" name = "filename" placeholder="Enter file name" formControlName="filename" />
+  <br>
+  <div>
+    <input type = "submit" value = "Get Image">
+  </div>
+  </div>
+</form>
